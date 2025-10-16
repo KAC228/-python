@@ -1,0 +1,78 @@
+import random
+
+digits = '0123456789'
+lowercase_letters = 'abcdefghijklmnopqrstuvwxyz'
+uppercase_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+punctuation = '!#$%&*+-=?@^_'
+chars = ''
+answer = []
+count = 0
+
+def input_settings_password():
+    global answer
+    answer = []
+    while True:
+        a = input('Какое количество паролей понадобится для генерации? (введите цифру)\n').strip()
+        if a.isdigit() and int(a) > 0:
+            answer.append(int(a))
+            break
+        print("Введите корректное число больше нуля.\n")
+
+    while True:
+        a = input('Какова длина одного пароля будет? (введите цифру)\n').strip()
+        if a.isdigit() and int(a) >= 4:
+            answer.append(int(a))
+            break
+        print("Минимальная длина пароля — 4 символа.\n")
+
+    settings = [
+        'Включать ли цифры? (д/н)\n',
+        'Включать ли прописные буквы? (д/н)\n',
+        'Включать ли строчные буквы? (д/н)\n',
+        'Включать ли иные символы? (д/н)\n',
+        'Исключать ли неоднозначные символы? (д/н)\n'
+    ]
+    for s in settings:
+        while True:
+            a = input(s).lower().strip()
+            if a in ('д', 'н'):
+                answer.append(a)
+                break
+            print("Введите только 'д' или 'н'.\n")
+
+
+def check():
+    global chars
+    chars = ''
+    if answer[2] == 'д':
+        chars += digits
+    if answer[3] == 'д':
+        chars += uppercase_letters
+    if answer[4] == 'д':
+        chars += lowercase_letters
+    if answer[5] == 'д':
+        chars += punctuation
+
+    if not chars:
+        print("Не выбран ни один тип символов, выберите хотя бы один тип!\n")
+        input_settings_password()
+        check()
+
+
+def generate_password(length, chars):
+    password = ''
+    for _ in range(length):
+        password += random.choice(chars)
+    return password
+
+
+input_settings_password()
+check()
+
+if answer[0] == 1:
+    for _ in range(answer[0]):
+        print(f"\nВаш пароль: {generate_password(answer[1], chars)}")
+else:
+    for _ in range(answer[0]):
+        count+=1
+        print(f"\nВаш пароль №{count}: {generate_password(answer[1], chars)}")
