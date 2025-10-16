@@ -1,0 +1,101 @@
+from random import randint
+
+
+def is_valid(n):
+    if left_border <= int(n) <= right_border:
+        return True
+    else:
+        return False
+
+
+def game_mode(g):
+    global left_border, right_border
+
+    if g.lower() != 'классический':
+        print("Какую границу хотите задать? (левую/правую/обе/не хочу)")
+
+        choice = input().lower()
+
+        if choice == 'обе':
+            left_border_input = input("Задайте левую границу: ")
+            if left_border_input.isdigit():
+                left_border = int(left_border_input)
+            else:
+                print("Неккоректное значение, введите число")
+                return
+
+            right_border_input = input("Задайте правую границу: ")
+            if right_border_input.isdigit():
+                right_border = int(right_border_input)
+            else:
+                print("Неккоректное значение, введите число")
+                return
+
+        elif choice == 'левую':
+            left_border_input = input("Задайте левую границу: ")
+            if left_border_input.isdigit():
+                left_border = int(left_border_input)
+            else:
+                print("Неккоректное значение, введите число")
+                return
+
+        elif choice == 'правую':
+            right_border_input = input("Задайте правую границу: ")
+            if right_border_input.isdigit():
+                right_border = int(right_border_input)
+            else:
+                print("Неккоректное значение, введите число")
+                return
+
+        elif choice == 'не хочу':
+            left_border, right_border = 1, 100
+
+        else:
+            print("Выберите только вариант из списка левую/правую/обе/не хочу")
+    else:
+        left_border, right_border = 1, 100
+
+
+def play_game():
+    global left_border, right_border
+
+    choice_game_mode = input(
+        "Добро пожаловать в числовую угадайку! В классическом режиме игры будут загаданы числа от 1 до 100, в произвольном - вы сами вводите границы.\n"
+        "Выберите режим (классический/произвольный): ")
+
+    game_mode(choice_game_mode)
+
+    random_number = randint(left_border, right_border)
+
+    input_number = input("Число загадано! Попробуйте угадать: ")
+
+    attempts = 1
+
+    while True:
+        if input_number.isdigit() and is_valid(input_number):
+            input_number_int = int(input_number)
+            if input_number_int > random_number:
+                print("\nВаше число больше загаданного\n ")
+            elif input_number_int < random_number:
+                print("\nВаше число меньше загаданного\n")
+            else:
+                print(f"\nВы угадали c {attempts} попытки, поздравляем!!! \n")
+                break
+        else:
+            print(f"\nА может быть все-таки введем целое число от {left_border} до {right_border}?\n")
+
+        input_number = input("Попробуйте еще раз: ")
+        attempts += 1
+
+    print("Спасибо, что играли в числовую угадайку.\n")
+
+
+left_border, right_border = 1, 100
+
+while True:
+    play_game()
+    print("Хотите сыграть еще раз? (да/нет)")
+    if input().lower() != 'да':
+        print("\n\tСпасибо за игру, пока!")
+        break
+
