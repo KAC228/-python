@@ -1,0 +1,172 @@
+from random import *
+
+word_list = ['корова', 'собака', 'лошадь', 'бык', 'конь', 'петух', 'курица']
+
+
+def get_word(words):
+    word = choice(word_list)
+
+    return word.upper()
+
+
+def display_hangman(tries):
+    stages = [  # финальное состояние: голова, торс, обе руки, обе ноги
+        '''
+           --------
+           |      |
+           |      O
+           |     \\|/
+           |      |
+           |     / \\
+           -
+        ''',
+        # голова, торс, обе руки, одна нога
+        '''
+           --------
+           |      |
+           |      O
+           |     \\|/
+           |      |
+           |     / 
+           -
+        ''',
+        # голова, торс, обе руки
+        '''
+           --------
+           |      |
+           |      O
+           |     \\|/
+           |      |
+           |      
+           -
+        ''',
+        # голова, торс и одна рука
+        '''
+           --------
+           |      |
+           |      O
+           |     \\|
+           |      |
+           |     
+           -
+        ''',
+        # голова и торс
+        '''
+           --------
+           |      |
+           |      O
+           |      |
+           |      |
+           |     
+           -
+        ''',
+        # голова
+        '''
+           --------
+           |      |
+           |      O
+           |    
+           |      
+           |     
+           -
+        ''',
+        # начальное состояние
+        '''
+           --------
+           |      |
+           |      
+           |    
+           |      
+           |     
+           -
+        '''
+    ]
+    return stages[tries]
+
+
+def play(word):
+    print('Давайте играть в угадайку слов!')
+    tries = 6
+    print(f'Количество попыток: {tries}')
+    print(display_hangman(tries))
+    word_completion = '_' * len(word)
+    print(f'Загаданное слово: {word_completion}')
+    guessed = False
+    guessed_letters = []
+    guessed_words = []
+    word_completion2 = list(word_completion)
+
+    while tries != 0 or guessed:
+        letter_or_word = input('Введите одну букву или слово целиком: ').upper()
+
+        while True:
+            if not letter_or_word.isalpha():
+                print('Введите буквенный символ.')
+                letter_or_word = input('Повторно введите одну букву или слово целиком: ').upper()
+            elif 1 < len(letter_or_word) < len(word):
+                print("Введи либо одну букву, либо слово целиком: ")
+                letter_or_word = input('Повторно введите одну букву или слово целиком: ').upper()
+            else:
+                break
+
+        if letter_or_word in guessed_words or letter_or_word in guessed_letters:
+            print('Ты уже называл эту букву или слово.')
+            if guessed_letters != []:
+                print(f'Список введенных букв: {guessed_letters}')
+            if guessed_words != []:
+                print(f'Список введенных слов: {guessed_words}')
+            continue
+
+        elif len(letter_or_word) == 1 and letter_or_word not in word:
+            guessed_letters.append(letter_or_word)
+            print(f'Неверная буква! {word_completion}')
+            tries -= 1
+            print(display_hangman(tries))
+            print(f'Осталось попыток: {tries}')
+            if guessed_letters != []:
+                print(f'Список введенных букв: {guessed_letters}')
+            if guessed_words != []:
+                print(f'Список введенных слов: {guessed_words}')
+            continue
+
+        elif len(letter_or_word) > 1 and letter_or_word != word:
+            guessed_words.append(letter_or_word)
+            print(f'Неверное слово! {word_completion}')
+            tries -= 1
+            print(display_hangman(tries))
+            print(f'Осталось попыток: {tries}')
+            if guessed_letters != []:
+                print(f'Список введенных букв: {guessed_letters}')
+            if guessed_words != []:
+                print(f'Список введенных слов: {guessed_words}')
+            continue
+
+        elif len(letter_or_word) == 1 and letter_or_word in word:
+            guessed_letters.append(letter_or_word)
+            for _ in range(len(word)):
+                if letter_or_word == word[_]:
+                    word_completion2[_] = word[_]
+            word_completion = ''.join(word_completion2)
+
+            if word_completion == word:
+                print(f'Поздравляем, вы угадали загаданное слово: {word}')
+                guessed = True
+                break
+
+            elif word_completion != word:
+                print(f'Вы угадали букву {word_completion}')
+                if guessed_letters != []:
+                    print(f'Список введенных букв: {guessed_letters}')
+                if guessed_words != []:
+                    print(f'Список введенных слов: {guessed_words}')
+                continue
+
+        elif len(letter_or_word) == len(word) and letter_or_word == word:
+            print(f'Поздравляем, вы угадали загаданное слово: {word}')
+            guessed_words.append(letter_or_word)
+            guessed = True
+            break
+
+play(get_word(word_list))
+
+print(f'Ты проиграл :( Загаданное слово: {get_word(word_list)}')
