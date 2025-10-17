@@ -1,0 +1,45 @@
+my_text = input().split(' ')
+
+alphabet_eng_lower = 'abcdefghijklmnopqrstuvwxyz'
+alphabet_eng_upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+power_eng = 26
+
+
+def ceaser_cipher_encryption(text, k, alphabet_l, alphabet_u, power):
+    encryption_text = ''
+    for el in text:
+        if el in alphabet_l:
+            ind = alphabet_l.index(el)
+            if ind + k < power:
+                encryption_text += alphabet_l[ind + k]
+            else:
+                encryption_text += alphabet_l[ind + k - power]
+        elif el in alphabet_u:
+            ind = alphabet_u.index(el)
+            if ind + k < power:
+                encryption_text += alphabet_u[ind + k]
+            else:
+                encryption_text += alphabet_u[ind + k - power]
+        else:
+            encryption_text += el
+
+    return encryption_text
+
+new_list = []
+
+for word in my_text:
+    if word.isalpha():
+        rot = len(word)
+    else:
+        count = 0
+        for c in word:
+            if c.isalpha():
+                continue
+            else:
+                count += 1
+        rot = len(word) - count
+
+    new_list.append(ceaser_cipher_encryption(word, rot, alphabet_eng_lower, alphabet_eng_upper, power_eng))
+
+print(' '.join(new_list))
